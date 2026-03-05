@@ -1,5 +1,6 @@
 import { User } from '../models/User.js';
 import bcypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
   try {
@@ -35,10 +36,63 @@ export const register = async (req, res) => {
     await newUser.save();
     res.status(201).json({
       message: 'User registered successfully',
-      success: true,
     });
   } catch (error) {
     console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid username or password' });
+    }
+
+    const isMatch = await bcypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid username or password' });
+    }
+
+    const tokenData = {
+      userId: user._id,
+    };
+
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res
+      .status(200)
+      .cookie('token', token, {
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: 'strict',
+      })
+      .json({
+        _id: user._id,
+        username: user.username,
+        fullName: user.fullName,
+        profilePhoto: user.profilePhoto,
+      });
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const logout = (req, res) => {
+  try {
+    res
+      .status(200)
+      .cookie('token', '', { maxAge: 0 })
+      .json({ message: 'User logged out successfully' });
+  } catch (error) {
+    console.error('Error logging out user:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
