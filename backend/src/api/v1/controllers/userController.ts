@@ -1,6 +1,7 @@
-import { User } from '../models/User.js';
 import bcypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { User } from 'db/models/user';
+import { srvConfig } from 'loaders/app';
 
 export const register = async (req, res) => {
   try {
@@ -65,7 +66,7 @@ export const login = async (req, res) => {
       userId: user._id,
     };
 
-    const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign(tokenData, srvConfig.jwtSecret, { expiresIn: '1d' });
     res
       .status(200)
       .cookie('token', token, {
@@ -85,7 +86,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
+export const logout = (_, res) => {
   try {
     res
       .status(200)
