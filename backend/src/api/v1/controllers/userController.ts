@@ -97,3 +97,13 @@ export const logout = (_, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getOtherUsers = async (req, res) => {
+  try {
+    const currentUserId = req.user;
+    const users = await User.find({ _id: { $ne: currentUserId } }).select('-password');
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
