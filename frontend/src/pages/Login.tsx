@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -7,8 +9,28 @@ const Login = () => {
     password: '',
   });
 
+  const navigate = useNavigate();
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/v1/user/login`, user, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+      navigate('/');
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.log(error);
+    }
+
+    setUser({
+      username: '',
+      password: '',
+    });
   };
   return (
     <div className='min-w-96 mx-auto'>

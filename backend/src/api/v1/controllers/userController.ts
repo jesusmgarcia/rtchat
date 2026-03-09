@@ -8,16 +8,25 @@ export const register = async (req, res) => {
     const { fullName, username, password, confirmPassword, gender } = req.body;
 
     if (!fullName || !username || !password || !confirmPassword || !gender) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required',
+      });
     }
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
+      return res.status(400).json({
+        success: false,
+        message: 'Passwords do not match',
+      });
     }
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ message: 'Username already exists' });
+      return res.status(400).json({
+        success: false,
+        message: 'Username already exists',
+      });
     }
 
     const hashedPassword = await bcypt.hash(password, 10);
@@ -36,11 +45,15 @@ export const register = async (req, res) => {
 
     await newUser.save();
     res.status(201).json({
+      success: true,
       message: 'User registered successfully',
     });
   } catch (error) {
     console.error('Error registering user:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
   }
 };
 
@@ -49,17 +62,26 @@ export const login = async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Username and password are required',
+      });
     }
 
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid username or password' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid username or password',
+      });
     }
 
     const isMatch = await bcypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid username or password' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid username or password',
+      });
     }
 
     const tokenData = {
@@ -82,7 +104,10 @@ export const login = async (req, res) => {
       });
   } catch (error) {
     console.error('Error logging in user:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
   }
 };
 
@@ -94,7 +119,10 @@ export const logout = (_, res) => {
       .json({ message: 'User logged out successfully' });
   } catch (error) {
     console.error('Error logging out user:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
   }
 };
 
@@ -104,6 +132,9 @@ export const getOtherUsers = async (req, res) => {
     const users = await User.find({ _id: { $ne: currentUserId } }).select('-password');
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
   }
 };

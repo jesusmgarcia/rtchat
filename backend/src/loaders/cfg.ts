@@ -15,13 +15,12 @@ export const loadConfig = (app: express.Application) => {
     app.use(compression());
   }
 
+  app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
-
-  // Add the morgan http request log middleware
-  app.use(morganMiddleware);
-
   //app.use(bodyParser.json({ type: 'application/json', strict: false }));
   app.use(express.json());
+  // Add the morgan http request log middleware
+  app.use(morganMiddleware);
 
   // Add rate limiting per IP
   if (srvConfig.environment === 'production') {
