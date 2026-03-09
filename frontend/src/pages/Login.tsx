@@ -2,6 +2,8 @@ import { useState, type SubmitEventHandler } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setAuthUser } from '../redux/userSlice';
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -10,18 +12,20 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onSubmitHandler: SubmitEventHandler = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/v1/user/login`, user, {
+      const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/v1/user/login`, user, {
         headers: {
           'Content-Type': 'application/json',
         },
         withCredentials: true,
       });
       navigate('/');
+      dispatch(setAuthUser(res.data));
     } catch (error) {
       if (axios.isAxiosError(error)) toast.error(error.response?.data.message);
       console.log(error);
