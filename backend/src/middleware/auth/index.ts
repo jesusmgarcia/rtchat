@@ -4,7 +4,6 @@ import { srvConfig } from 'loaders/app';
 import logger from 'utils/logger';
 
 export interface AuthMiddlewareRequest extends Request {
-  user: string;
   cookies: {
     token: string;
   };

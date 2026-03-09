@@ -143,12 +143,12 @@ export const login = async (
   }
 };
 
-export const logout = (_: Request, res: Response) => {
+export const logout = (_: Request, res: Response<DefaultResponse>) => {
   try {
-    res
-      .status(200)
-      .cookie('token', '', { maxAge: 0 })
-      .json({ message: 'User logged out successfully' });
+    res.status(200).cookie('token', '', { maxAge: 0 }).json({
+      success: true,
+      message: 'User logged out successfully',
+    });
   } catch (error) {
     logger.error('Error logging out user:', error);
     res.status(500).json({

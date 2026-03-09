@@ -23,13 +23,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
+    //"allowImportingTsExtensions": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    //"noEmit": true,
     "lib": ["ES5", "ES6"],
     "module": "CommonJS",
-    "typeRoots": ["node_modules/@types"],
-    "types": ["node", "express"],
+    "typeRoots": ["./src/types/express", "node_modules/@types"],
     "outDir": "./dist",
     "baseUrl": "./src/",
     "paths": {
@@ -41,6 +40,7 @@
       "utils": ["utils"]
     }
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*"],
+  "files": ["./src/types/express/index.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.config.js", "**/*.config.ts", "**/*.config.mjs"]
 }
