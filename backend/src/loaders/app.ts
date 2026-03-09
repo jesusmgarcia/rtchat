@@ -16,6 +16,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 const {
   NODE_ENV = 'development',
   SRV_PORT = '8000',
+  SRV_URL = 'http://localhost',
   MONGO_URI = 'mongodb + srv://user:password@server/',
   JWT_SECRET = 'secret',
   CORS_ORIGIN = 'http://localhost:8000',
@@ -25,6 +26,7 @@ export const srvConfig = {
   // env config
   environment: NODE_ENV,
   srvPort: SRV_PORT,
+  srvUrl: SRV_URL,
   mongoUri: MONGO_URI,
   jwtSecret: JWT_SECRET,
   corsOrigin: CORS_ORIGIN,

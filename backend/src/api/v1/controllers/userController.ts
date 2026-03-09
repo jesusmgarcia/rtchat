@@ -49,8 +49,11 @@ export const register = async (
     const hashedPassword = await bcypt.hash(password, 10);
 
     // profile photo
-    const maleProfilePhoto = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-    const femaleProfilePhoto = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+    //const maleProfilePhoto = `https://avatar.iran.liara.run/public/boy?username=${username}`;
+    //const femaleProfilePhoto = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+
+    const maleProfilePhoto = `${srvConfig.srvUrl}:${srvConfig.srvPort}/assets/male.png`;
+    const femaleProfilePhoto = `${srvConfig.srvUrl}:${srvConfig.srvPort}/assets/female.png`;
 
     const newUser = new User({
       fullName,

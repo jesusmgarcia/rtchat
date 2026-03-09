@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import morganMiddleware from 'middleware/morgan';
 import { rateLimit } from 'express-rate-limit';
 import { srvConfig } from './app';
+import path from 'path';
 
 export const loadConfig = (app: express.Application) => {
   logger.info('Initializing server configuration');
@@ -21,6 +22,8 @@ export const loadConfig = (app: express.Application) => {
   app.use(express.json());
   // Add the morgan http request log middleware
   app.use(morganMiddleware);
+
+  app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
   // Add rate limiting per IP
   if (srvConfig.environment === 'production') {
