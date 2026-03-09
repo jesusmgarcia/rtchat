@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { srvConfig } from 'loaders/app';
+import logger from 'utils/logger';
 
 export interface AuthMiddlewareRequest extends Request {
   user: string;
@@ -32,7 +33,7 @@ const isAuthenticated = (req: AuthMiddlewareRequest, res: Response, next: NextFu
     req.user = decode.userId as string;
     next();
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 };
 export default isAuthenticated;

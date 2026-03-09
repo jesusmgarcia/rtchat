@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type SubmitEventHandler } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -18,7 +18,7 @@ const Register = () => {
     setUser({ ...user, gender });
   };
 
-  const onSubmitHandler = async (e) => {
+  const onSubmitHandler: SubmitEventHandler = async (e) => {
     e.preventDefault();
 
     try {
@@ -38,7 +38,7 @@ const Register = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      if (axios.isAxiosError(error)) toast.error(error.response?.data.message);
       console.log(error);
     }
 

@@ -2,8 +2,25 @@ import bcypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from 'db/models/user';
 import { srvConfig } from 'loaders/app';
+import { Request, Response } from 'express';
+import logger from 'utils/logger';
+import { Types } from 'mongoose';
+import { DefaultResponse } from '../types';
 
-export const register = async (req, res) => {
+interface RegisterBody {
+  fullName: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  gender: 'male' | 'female';
+}
+
+type RegisterResponse = DefaultResponse;
+
+export const register = async (
+  req: Request<object, RegisterResponse, RegisterBody>,
+  res: Response<RegisterResponse>
+) => {
   try {
     const { fullName, username, password, confirmPassword, gender } = req.body;
 
@@ -49,7 +66,7 @@ export const register = async (req, res) => {
       message: 'User registered successfully',
     });
   } catch (error) {
-    console.error('Error registering user:', error);
+    logger.error('Error registering user:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -57,7 +74,22 @@ export const register = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+interface LoginBody {
+  username: string;
+  password: string;
+}
+
+interface LoginResponse {
+  _id: Types.ObjectId;
+  username: string;
+  fullName: string;
+  profilePhoto: string;
+}
+
+export const login = async (
+  req: Request<object, LoginResponse | DefaultResponse, LoginBody>,
+  res: Response<LoginResponse | DefaultResponse>
+) => {
   try {
     const { username, password } = req.body;
 
@@ -103,7 +135,7 @@ export const login = async (req, res) => {
         profilePhoto: user.profilePhoto,
       });
   } catch (error) {
-    console.error('Error logging in user:', error);
+    logger.error('Error logging in user:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -111,14 +143,14 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (_, res) => {
+export const logout = (_: Request, res: Response) => {
   try {
     res
       .status(200)
       .cookie('token', '', { maxAge: 0 })
       .json({ message: 'User logged out successfully' });
   } catch (error) {
-    console.error('Error logging out user:', error);
+    logger.error('Error logging out user:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -126,11 +158,12 @@ export const logout = (_, res) => {
   }
 };
 
-export const getOtherUsers = async (req, res) => {
+export const getOtherUsers = async (req: Request, res: Response) => {
   try {
     const currentUserId = req.user;
     const users = await User.find({ _id: { $ne: currentUserId } }).select('-password');
     res.status(200).json(users);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     res.status(500).json({
       success: false,

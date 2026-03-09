@@ -1,4 +1,5 @@
 import { addColors, createLogger, format, transports } from 'winston';
+import { TransformableInfo } from 'logform';
 
 // Define your severity levels.
 // With them, You can create log files,
@@ -37,6 +38,12 @@ const colors = {
 // defined above to the severity levels.
 addColors(colors);
 
+interface LogInfo extends TransformableInfo {
+  timestamp: string;
+  level: string;
+  message: string;
+}
+
 // Chose the aspect of your log customizing the log format.
 const myFormat = format.combine(
   // Add the message timestamp with the preferred format
@@ -44,7 +51,10 @@ const myFormat = format.combine(
   // Tell Winston that the logs must be colored
   //winston.format.colorize({ all: true }),
   // Define the format of the message showing the timestamp, the level and the message
-  format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
+  format.printf((info) => {
+    const { timestamp, level, message } = info as LogInfo;
+    return `${timestamp} ${level}: ${message}`;
+  })
 );
 
 // Define which transports the logger must use to print out messages.
