@@ -24,8 +24,8 @@ const Login = () => {
         },
         withCredentials: true,
       });
-      navigate('/');
       dispatch(setAuthUser(res.data));
+      navigate('/');
     } catch (error) {
       if (axios.isAxiosError(error)) toast.error(error.response?.data.message);
       console.log(error);

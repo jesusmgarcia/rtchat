@@ -13,7 +13,7 @@ const HomePage = () => {
     if (!authUser) {
       navigate('/login');
     }
-  }, []);
+  }, [authUser, navigate]);
 
   return (
     <div className='flex sm:h-[450px] md:h-[550px] rounded-lg overflow-hidden glass bg-clip-padding bg-opacity-0'>
