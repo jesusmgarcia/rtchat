@@ -42,8 +42,7 @@ export const SendMessage = async (
 
     await gotConversation.save();
     res.status(201).json({
-      success: true,
-      message: 'Message sent successfully',
+      newMessage,
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {

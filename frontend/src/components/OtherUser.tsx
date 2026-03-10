@@ -10,8 +10,6 @@ const OtherUser = ({ user }) => {
     dispatch(setSelectedUser(user));
   };
 
-  console.log(user);
-
   return (
     <>
       <div
