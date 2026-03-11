@@ -2,18 +2,19 @@ import Message from './Message';
 import useGetMessages from '../hooks/useGetMessages';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
+import useGetRealTimeMessage from '../hooks/useGetRealTimeMessages';
 
 const Messages = () => {
   useGetMessages();
-  const { messages } = useSelector((store: RootState) => store.message);
+  useGetRealTimeMessage();
 
-  console.log(messages);
+  const { messages } = useSelector((store: RootState) => store.message);
 
   return (
     <div className='px-4 flex-1 overflow-auto'>
       {messages &&
         messages?.map((message) => {
-          return <Message message={message} />;
+          return <Message key={message._id} message={message} />;
         })}
     </div>
   );

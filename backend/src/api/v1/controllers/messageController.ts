@@ -2,6 +2,7 @@ import { Conversation } from 'db/models/conversation';
 import { Message } from 'db/models/message';
 import { Request, Response } from 'express';
 import { DefaultResponse } from '../types';
+import { getReceiverSocketId, ioServer } from 'loaders/app';
 
 interface SendMessageBody {
   message: string;
@@ -40,10 +41,18 @@ export const SendMessage = async (
       gotConversation.messages.push(newMessage._id);
     }
 
-    await gotConversation.save();
-    res.status(201).json({
+    await Promise.all([gotConversation.save(), newMessage.save()]);
+
+    // SOCKET IO
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      ioServer.to(receiverSocketId).emit('newMessage', newMessage);
+    }
+
+    return res.status(201).json({
       newMessage,
     });
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     res.status(500).json({
